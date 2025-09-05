@@ -5,7 +5,7 @@ interface ChatBoxProps {
 }
 
 export default function ChatBox({ messages }: ChatBoxProps) {
-  console.log(messages);
+  console.log("MEssage", messages);
   return (
     <div
       style={{

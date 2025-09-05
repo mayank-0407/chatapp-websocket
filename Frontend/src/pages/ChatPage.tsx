@@ -10,7 +10,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
-  const [user] = useState(() => `User-${Math.floor(Math.random() * 1000)}`);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     const socket = socketRef.current;
@@ -20,15 +20,19 @@ export default function ChatPage() {
       setMessages((prev) => [...prev, data]);
     });
 
+    socket.on("chat:system", (data: ChatMessage) => {
+      setMessages((prev) => [...prev, data]);
+    });
     return () => {
       socket.off("chat:message");
+      socket.off("chat:system");
     };
   }, [socketRef]);
 
   const joinRoom = (roomName: string) => {
     const socket = socketRef.current;
     if (!socket) return;
-    socket.emit("chat:join", roomName);
+    socket.emit("chat:join", { room: roomName, user });
     setRoom(roomName);
     setJoined(true);
   };
@@ -43,7 +47,15 @@ export default function ChatPage() {
     <div style={{ padding: "20px" }}>
       <h1>💬 Real-time Chat</h1>
       {!joined ? (
-        <RoomJoin onJoin={joinRoom} />
+        <>
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter the name of the user"
+            onChange={(e) => setUser(e.target.value)}
+          />
+          <RoomJoin onJoin={joinRoom} />
+        </>
       ) : (
         <>
           <h2>Room: {room}</h2>
