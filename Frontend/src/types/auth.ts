@@ -8,3 +8,9 @@ export interface SignupFormData {
   email: string;
   password: string;
 }
+
+export interface UserData {
+  _id: number;
+  name: string;
+  email: string;
+}

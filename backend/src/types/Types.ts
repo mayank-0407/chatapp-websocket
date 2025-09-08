@@ -13,3 +13,9 @@ export interface LoginInterface {
   email: string;
   password: string;
 }
+
+export interface ConnectedUser {
+  socketId: string;
+  userId: string;
+}
+
